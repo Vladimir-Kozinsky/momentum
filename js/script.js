@@ -28,21 +28,23 @@ const showDate = () => {
 
 showDate();
 
+const getTimeOfDay = (hour) => {
+    if (5 <= hour && hour <= 11) {
+        return "Morning"
+    } else if (12 <= hour && hour <= 16) {
+        return "Afternoon"
+    } else if (17 <= hour && hour <= 23) {
+        return "Evening"
+    } else {
+        return "Night"
+    }
+}
+
 const showGreeting = () => {
     const greeting = document.querySelector(".greeting")
     const date = new Date();
     const hours = date.getHours();
-    const getTimeOfDay = (hour) => {
-        if (5 <= hour && hour <= 11) {
-            return "Morning"
-        } else if (12 <= hour && hour <= 16) {
-            return "Afternoon"
-        } else if (17 <= hour && hour <= 23) {
-            return "Evening"
-        } else {
-            return "Night"
-        }
-    }
+
     const timeOfDay = getTimeOfDay(hours)
     greeting.textContent = `Good ${timeOfDay},`
 
@@ -66,4 +68,19 @@ function getLocalStorage() {
     }
 }
 window.addEventListener('load', getLocalStorage)
+
+// SLIDER
+
+const getRandomNum = () => {
+    min = Math.ceil(10);
+    max = Math.floor(20);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+const setBg = () => {
+    const timeOfDay = getTimeOfDay().toLowerCase();
+    const bgNum = getRandomNum();
+    const body = document.body;
+    body.style.backgroundImage = `url('https://raw.githubusercontent.com/rolling-scopes-school/stage1-tasks/assets/images/${timeOfDay}/${bgNum}.jpg')`
+}
 
