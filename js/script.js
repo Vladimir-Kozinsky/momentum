@@ -1,4 +1,5 @@
 
+
 const showTime = () => {
     const time = document.querySelector('.time');
     const date = new Date();
@@ -72,15 +73,14 @@ window.addEventListener('load', getLocalStorage)
 // SLIDER
 
 const getRandomNum = () => {
-    min = Math.ceil(10);
-    max = Math.floor(20);
+    let min = Math.ceil(10);
+    let max = Math.floor(20);
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 const setBg = (timeOfDay, bgNum) => {
     const body = document.body;
     const img = new Image();
-    console.log(img)
     img.src = `https://raw.githubusercontent.com/rolling-scopes-school/stage1-tasks/assets/images/${timeOfDay}/${bgNum}.jpg`
     img.onload = () => {
         body.style.backgroundImage = `url('https://raw.githubusercontent.com/rolling-scopes-school/stage1-tasks/assets/images/${timeOfDay}/${bgNum}.jpg')`
@@ -133,7 +133,6 @@ async function getWeather() {
     if (!city.value) {
         city.value = "Minsk"
     }
-    console.log(city)
     const url = `https://api.openweathermap.org/data/2.5/weather?q=${city.value}&lang=en&appid=08f2a575dda978b9c539199e54df03b0&units=metric`;
     const res = await fetch(url);
     const data = await res.json();
@@ -152,3 +151,55 @@ async function getWeather() {
 getWeather()
 const city = document.querySelector(".city")
 city.addEventListener("change", getWeather)
+
+// PLAY LIST
+
+const playList = [
+    {      
+      title: 'Aqua Caelestis',
+      src: '../assets/sounds/Aqua Caelestis.mp3',
+      duration: '00:58'
+    },  
+    {      
+      title: 'River Flows In You',
+      src: '../assets/sounds/River Flows In You.mp3',
+      duration: '03:50'
+    }
+  ]
+
+  const playListItem = document.querySelector(".play-list")
+  const li = document.createElement('li');
+  playListItem.append(li)
+// PLAYER
+let isPlay = false;
+const audio = new Audio();
+const playBtn = document.querySelector('.play');
+const playPrev = document.querySelector('.play-prev'); 
+const playNext = document.querySelector('.play-next'); 
+const playPause = () => {
+    if (isPlay) {
+        pauseAudio()
+    } else if (!isPlay) {
+        playAudio()
+    }
+}
+const play = () => {
+    playAudio()
+}
+playPrev.addEventListener("click", play)
+playNext.addEventListener("click", play)
+playBtn.addEventListener("click", playPause)
+function playAudio() {
+    isPlay = true;
+    audio.src = '../assets/sounds/Aqua Caelestis.mp3';
+    audio.currentTime = 0;
+    audio.play();
+    playBtn.classList.add('pause')
+}
+function pauseAudio() {
+    isPlay = false
+    audio.currentTime = 0;
+    audio.pause();
+    playBtn.classList.remove('pause')
+}
+
