@@ -77,10 +77,78 @@ const getRandomNum = () => {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-const setBg = () => {
-    const timeOfDay = getTimeOfDay().toLowerCase();
-    const bgNum = getRandomNum();
+const setBg = (timeOfDay, bgNum) => {
     const body = document.body;
-    body.style.backgroundImage = `url('https://raw.githubusercontent.com/rolling-scopes-school/stage1-tasks/assets/images/${timeOfDay}/${bgNum}.jpg')`
+    const img = new Image();
+    console.log(img)
+    img.src = `https://raw.githubusercontent.com/rolling-scopes-school/stage1-tasks/assets/images/${timeOfDay}/${bgNum}.jpg`
+    img.onload = () => {
+        body.style.backgroundImage = `url('https://raw.githubusercontent.com/rolling-scopes-school/stage1-tasks/assets/images/${timeOfDay}/${bgNum}.jpg')`
+    }
 }
 
+let randomNum;
+randomNum = getRandomNum()
+const date = new Date();
+const hours = date.getHours();
+const timeOfDay = getTimeOfDay(hours).toLowerCase();
+setBg(timeOfDay, randomNum);
+
+const getSlideNext = () => {
+    const date = new Date();
+    const hours = date.getHours();
+    randomNum = getRandomNum()
+    const timeOfDay = getTimeOfDay(hours).toLowerCase();
+    if (randomNum < 21) {
+        randomNum++
+    } else {
+        randomNum = 1
+    }
+    setBg(timeOfDay, randomNum)
+}
+
+const getSlidePrev = () => {
+    const date = new Date();
+    const hours = date.getHours();
+    const timeOfDay = getTimeOfDay(hours).toLowerCase();
+    randomNum = getRandomNum()
+    if (randomNum > 1) {
+        randomNum--
+    } else {
+        randomNum = 20
+    }
+    setBg(timeOfDay, randomNum)
+}
+
+const slideNext = document.querySelector(".slide-next")
+slideNext.addEventListener("click", getSlideNext)
+
+const slidePrev = document.querySelector(".slide-prev")
+slidePrev.addEventListener("click", getSlidePrev)
+
+// WETHER
+
+async function getWeather() {
+    const city = document.querySelector(".city")
+    if (!city.value) {
+        city.value = "Minsk"
+    }
+    console.log(city)
+    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city.value}&lang=en&appid=08f2a575dda978b9c539199e54df03b0&units=metric`;
+    const res = await fetch(url);
+    const data = await res.json();
+    const weatherIcon = document.querySelector('.weather-icon');
+    const temperature = document.querySelector('.temperature');
+    const weatherDescription = document.querySelector('.weather-description');
+    const weatherWind = document.querySelector('.wind');
+    const weatherHumidity = document.querySelector('.humidity');
+    weatherIcon.className = 'weather-icon owf';
+    weatherIcon.classList.add(`owf-${data.weather[0].id}`);
+    temperature.textContent = `${Math.round(data.main.temp)}°C`;
+    weatherDescription.textContent = data.weather[0].description;
+    weatherWind.textContent = `Wind speed: ${Math.round(data.wind.speed)} m/s`;
+    weatherHumidity.textContent = `Humidity: ${data.main.humidity}% `;
+}
+getWeather()
+const city = document.querySelector(".city")
+city.addEventListener("change", getWeather)
