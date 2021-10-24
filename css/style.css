@@ -112,6 +112,51 @@ body {
   background-image: url("../assets/svg/play-next.svg");
 }
 
+/* CUSTOM PLAYER */
+
+.audio-player {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  
+  width: 250px;
+  margin-bottom: 30px;
+  border-radius: 5px;
+}
+
+.audio-player .timeline {
+  background: rgb(245, 188, 188);
+  height: 4px;
+  width: 80%;
+  position: relative;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.audio-player .timeline .progress {
+  background: rgb(117, 31, 0);
+  height: 4px;
+  width: 2%;
+  height: 100%;
+  transition: 0.25s;
+  border-radius: 5px;
+  border: .1px rgb(117, 31, 0) solid;
+  
+}
+
+.song-time {
+  width: 15%;
+  font-size: 12px;
+}
+
+.volume {
+  width: 5%;
+  border: 1px red solid;
+}
+
+
+
+
 .weather {
   display: flex;
   flex-direction: column;

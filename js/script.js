@@ -178,7 +178,6 @@ const playList = [
 ]
 
 const playListItem = document.querySelector(".play-list")
-let choosedItem = 0;
 
 for (let i = 0; i < playList.length; i++) {
     const li = document.createElement('li');
@@ -193,9 +192,13 @@ for (let i = 0; i < playList.length; i++) {
 // PLAYER
 let isPlay = false;
 const audio = new Audio();
+let choosedItem = 0;
+audio.src = `${playList[choosedItem].src}`
 const playBtn = document.querySelector('.play');
 const playPrev = document.querySelector('.play-prev');
 const playNext = document.querySelector('.play-next');
+const items = document.querySelectorAll('.play-item')
+
 const playPause = () => {
     if (isPlay) {
         pauseAudio()
@@ -203,59 +206,114 @@ const playPause = () => {
         playAudio()
     }
 }
-const playAudioPrev = () => {
-    if (choosedItem === 0) {
-        choosedItem = playList.length - 1
-    } else {
-      choosedItem -=1  
-    }
-    addClassToPlayListItem(choosedItem)
-    playAudio(choosedItem)
-}
-const playAudioNext = () => {
-    if (choosedItem === playList.length - 1) {
-        choosedItem = 0
-    } else {
-      choosedItem +=1  
-    }
-    addClassToPlayListItem(choosedItem)
-    playAudio(choosedItem)
-}
 
-const addClassToPlayListItem = (item = 0) => {
-    const items = document.querySelectorAll('.play-item')
-    if (items.length === 0) {
-
-    } else {
-        for (let index = 0; index < items.length; index++) {
-            items[index].classList.remove('item-active')
-        }
-    }
-
-    items[item].classList.add('item-active')
-}
-
-
-
-
-
-playPrev.addEventListener("click", playAudioPrev)
-playNext.addEventListener("click", playAudioNext)
-playBtn.addEventListener("click", playPause)
-function playAudio(item = choosedItem ) {
-    addClassToPlayListItem(item)
+function playAudio() {
     isPlay = true;
-    console.log(playList[item].title)
-    audio.src = `../assets/sounds/${playList[item].title}.mp3`;
-    console.log(audio.src)
-    audio.currentTime = 0;
     audio.play();
     playBtn.classList.add('pause')
 }
 function pauseAudio() {
     isPlay = false
-    audio.currentTime = 0;
     audio.pause();
     playBtn.classList.remove('pause')
 }
+
+const playAudioPrev = () => {
+    if (choosedItem === 0) {
+        choosedItem = playList.length - 1
+    } else {
+        choosedItem -= 1
+    }
+    addClassToPlayListItem(choosedItem)
+    audio.src = `${playList[choosedItem].src}`
+    playAudio()
+}
+
+const playAudioNext = () => {
+    if (choosedItem === playList.length - 1) {
+        choosedItem = 0
+    } else {
+        choosedItem += 1
+    }
+    addClassToPlayListItem(choosedItem)
+    audio.src = `${playList[choosedItem].src}`
+    playAudio()
+}
+
+const addClassToPlayListItem = (item = 0) => {
+    if (items.length === 0) {
+    } else {
+        for (let index = 0; index < items.length; index++) {
+            items[index].classList.remove('item-active')
+        }
+    }
+    items[item].classList.add('item-active')
+}
+
+addClassToPlayListItem(choosedItem)
+
+playPrev.addEventListener("click", playAudioPrev)
+playNext.addEventListener("click", playAudioNext)
+playBtn.addEventListener("click", playPause)
+
+// CUSTOM AUDIO PLAYER
+
+const audioPlayer = document.querySelector(".audio-player");
+const timeline = audioPlayer.querySelector(".timeline");
+const progressBar = audioPlayer.querySelector(".progress");
+const volume = audioPlayer.querySelector(".volume");
+const songTime = audioPlayer.querySelector(".song-time");
+
+
+
+timeline.addEventListener("click", e => {
+    const timelineWidth = window.getComputedStyle(timeline).width;
+    const timeToSeek = e.offsetX / parseInt(timelineWidth) * audio.duration;
+    console.log(audio.duration)
+    audio.currentTime = timeToSeek;
+}, false);
+
+// check audio percentage and update time accordingly
+setInterval(() => {
+    progressBar.style.width = audio.currentTime / audio.duration * 100 + "%";
+    songTime.textContent = getTimeCodeFromNum(audio.currentTime);
+
+}, 500);
+
+//turn 128 seconds into 2:08
+function getTimeCodeFromNum(num) {
+    let seconds = parseInt(num);
+    let minutes = parseInt(seconds / 60);
+    seconds -= minutes * 60;
+    const hours = parseInt(minutes / 60);
+    minutes -= hours * 60;
+
+    if (hours === 0) return `${minutes}:${String(seconds % 60).padStart(2, 0)}`;
+    return `${String(hours).padStart(2, 0)}:${minutes}:${String(
+      seconds % 60
+    ).padStart(2, 0)}`;
+  }
+
+// QUOTE OF THE DAY
+let qouateNumber = 0;
+async function getQuotes() {
+    const quotes = 'js/data.json';
+    const res = await fetch(quotes);
+    const data = await res.json();
+    const quoteText = document.querySelector(".quote")
+    if (qouateNumber > data.length - 1) {
+        qouateNumber = 0
+    }
+    quoteText.textContent = await data[qouateNumber].text
+    qouateNumber++
+}
+getQuotes()
+const changeQuote = document.querySelector(".change-quote")
+changeQuote.addEventListener("click", getQuotes)
+
+
+
+
+
+
 
