@@ -155,27 +155,47 @@ city.addEventListener("change", getWeather)
 // PLAY LIST
 
 const playList = [
-    {      
-      title: 'Aqua Caelestis',
-      src: '../assets/sounds/Aqua Caelestis.mp3',
-      duration: '00:58'
-    },  
-    {      
-      title: 'River Flows In You',
-      src: '../assets/sounds/River Flows In You.mp3',
-      duration: '03:50'
+    {
+        title: 'Aqua Caelestis',
+        src: '../assets/sounds/Aqua Caelestis.mp3',
+        duration: '00:58'
+    },
+    {
+        title: 'Ennio Morricone',
+        src: '../assets/sounds/Ennio Morricone.mp3',
+        duration: '03:50'
+    },
+    {
+        title: 'River Flows In You',
+        src: '../assets/sounds/River Flows In You.mp3',
+        duration: '00:58'
+    },
+    {
+        title: 'Summer Wind',
+        src: '../assets/sounds/Summer Wind.mp3',
+        duration: '00:58'
     }
-  ]
+]
 
-  const playListItem = document.querySelector(".play-list")
-  const li = document.createElement('li');
-  playListItem.append(li)
+const playListItem = document.querySelector(".play-list")
+let choosedItem = 0;
+
+for (let i = 0; i < playList.length; i++) {
+    const li = document.createElement('li');
+    playListItem.append(li)
+    li.textContent = playList[i].title
+    // li.style.listStyleType = "none"
+    li.classList.add('play-item')
+
+}
+
+
 // PLAYER
 let isPlay = false;
 const audio = new Audio();
 const playBtn = document.querySelector('.play');
-const playPrev = document.querySelector('.play-prev'); 
-const playNext = document.querySelector('.play-next'); 
+const playPrev = document.querySelector('.play-prev');
+const playNext = document.querySelector('.play-next');
 const playPause = () => {
     if (isPlay) {
         pauseAudio()
@@ -183,15 +203,51 @@ const playPause = () => {
         playAudio()
     }
 }
-const play = () => {
-    playAudio()
+const playAudioPrev = () => {
+    if (choosedItem === 0) {
+        choosedItem = playList.length - 1
+    } else {
+      choosedItem -=1  
+    }
+    addClassToPlayListItem(choosedItem)
+    playAudio(choosedItem)
 }
-playPrev.addEventListener("click", play)
-playNext.addEventListener("click", play)
+const playAudioNext = () => {
+    if (choosedItem === playList.length - 1) {
+        choosedItem = 0
+    } else {
+      choosedItem +=1  
+    }
+    addClassToPlayListItem(choosedItem)
+    playAudio(choosedItem)
+}
+
+const addClassToPlayListItem = (item = 0) => {
+    const items = document.querySelectorAll('.play-item')
+    if (items.length === 0) {
+
+    } else {
+        for (let index = 0; index < items.length; index++) {
+            items[index].classList.remove('item-active')
+        }
+    }
+
+    items[item].classList.add('item-active')
+}
+
+
+
+
+
+playPrev.addEventListener("click", playAudioPrev)
+playNext.addEventListener("click", playAudioNext)
 playBtn.addEventListener("click", playPause)
-function playAudio() {
+function playAudio(item = choosedItem ) {
+    addClassToPlayListItem(item)
     isPlay = true;
-    audio.src = '../assets/sounds/Aqua Caelestis.mp3';
+    console.log(playList[item].title)
+    audio.src = `../assets/sounds/${playList[item].title}.mp3`;
+    console.log(audio.src)
     audio.currentTime = 0;
     audio.play();
     playBtn.classList.add('pause')
