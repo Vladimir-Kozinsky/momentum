@@ -193,11 +193,20 @@ for (let i = 0; i < playList.length; i++) {
 let isPlay = false;
 const audio = new Audio();
 let choosedItem = 0;
-audio.src = `${playList[choosedItem].src}`
 const playBtn = document.querySelector('.play');
 const playPrev = document.querySelector('.play-prev');
 const playNext = document.querySelector('.play-next');
 const items = document.querySelectorAll('.play-item')
+
+async function getSong() {
+    const song = `${playList[choosedItem].src}`;
+    const res = await fetch(song);
+
+    audio.src = res.url
+    console.log(audio.src)
+}
+
+getSong()
 
 const playPause = () => {
     if (isPlay) {
@@ -218,25 +227,24 @@ function pauseAudio() {
     playBtn.classList.remove('pause')
 }
 
-const playAudioPrev = () => {
+async function playAudioPrev() {
     if (choosedItem === 0) {
         choosedItem = playList.length - 1
     } else {
         choosedItem -= 1
     }
     addClassToPlayListItem(choosedItem)
-    audio.src = `${playList[choosedItem].src}`
+    await getSong()
     playAudio()
 }
-
-const playAudioNext = () => {
+async function playAudioNext() {
     if (choosedItem === playList.length - 1) {
         choosedItem = 0
     } else {
         choosedItem += 1
     }
     addClassToPlayListItem(choosedItem)
-    audio.src = `${playList[choosedItem].src}`
+    await getSong()
     playAudio()
 }
 
@@ -290,9 +298,9 @@ function getTimeCodeFromNum(num) {
 
     if (hours === 0) return `${minutes}:${String(seconds % 60).padStart(2, 0)}`;
     return `${String(hours).padStart(2, 0)}:${minutes}:${String(
-      seconds % 60
+        seconds % 60
     ).padStart(2, 0)}`;
-  }
+}
 
 // QUOTE OF THE DAY
 let qouateNumber = 0;
