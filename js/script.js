@@ -1,9 +1,11 @@
-
+let lang = "En";
+let timeOfDay;
 
 const showTime = () => {
     const time = document.querySelector('.time');
     const date = new Date();
-    const currentTime = date.toLocaleTimeString()
+    const currentTime = date.toLocaleTimeString(lang === "En" 
+    ? 'en-US': 'ru-RU')
     time.textContent = currentTime;
     setTimeout(showTime, 1000);
     const option = { hour: 'numeric', minute: 'numeric', second: 'numeric' }
@@ -23,21 +25,43 @@ const showDate = () => {
     const dateSel = document.querySelector(".date");
     const date = new Date();
     const options = { weekday: 'long', month: 'long', day: 'numeric', timeZone: 'UTC' };
-    const currentDate = date.toLocaleDateString('en-US', options);
+    const currentDate = date.toLocaleDateString(lang === "En" 
+    ? 'en-US': 'ru-RU', options);
     dateSel.textContent = currentDate;
 }
 
 showDate();
 
+// TRNASLATE
+const language = document.querySelector(".lang")
+let greetingTranslation = {
+    en: {
+        mor: "Good Morning",
+        aft: "Good Afternoon",
+        eve: "Good Evening",
+        nig: "Good Night"
+    },
+    ru: {
+        mor: "Доброе утро",
+        aft: "Добрый день",
+        eve: "Добрый вечер",
+        nig: "Доброй ночи"
+    },
+}
+
 const getTimeOfDay = (hour) => {
-    if (5 <= hour && hour <= 11) {
-        return "Morning"
-    } else if (12 <= hour && hour <= 16) {
-        return "Afternoon"
-    } else if (17 <= hour && hour <= 23) {
-        return "Evening"
+    if (6 <= hour && hour <= 11) {
+        timeOfDay = "morning"
+        return lang === "En" ? greetingTranslation.en.mor : greetingTranslation.ru.mor
+    } else if (12 <= hour && hour <= 17) {
+        timeOfDay = "afternoon" 
+        return lang === "En" ? greetingTranslation.en.aft : greetingTranslation.ru.aft
+    } else if (18 <= hour && hour <= 23) {
+        timeOfDay = "evening"
+        return lang === "En" ? greetingTranslation.en.eve : greetingTranslation.ru.eve
     } else {
-        return "Night"
+        timeOfDay = "night"
+        return lang === "En" ? greetingTranslation.en.nig : greetingTranslation.ru.nig
     }
 }
 
@@ -45,9 +69,8 @@ const showGreeting = () => {
     const greeting = document.querySelector(".greeting")
     const date = new Date();
     const hours = date.getHours();
-
     const timeOfDay = getTimeOfDay(hours)
-    greeting.textContent = `Good ${timeOfDay},`
+    greeting.textContent = timeOfDay
 
 }
 
@@ -70,11 +93,28 @@ function getLocalStorage() {
 }
 window.addEventListener('load', getLocalStorage)
 
+const changeLang = () => {
+    if (lang === "En") {
+        lang = "Ru"
+    } else if (lang === "Ru") {
+        lang = "En"
+    }
+    showGreeting()
+    language.textContent = lang
+    showDate();
+    getWeather();
+
+}
+
+
+language.addEventListener("click", changeLang)
+
+
 // SLIDER
 
 const getRandomNum = () => {
-    let min = Math.ceil(10);
-    let max = Math.floor(20);
+    let min = Math.ceil(11);
+    let max = Math.floor(19);
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
@@ -91,14 +131,14 @@ let randomNum;
 randomNum = getRandomNum()
 const date = new Date();
 const hours = date.getHours();
-const timeOfDay = getTimeOfDay(hours).toLowerCase();
+// const timeOfDay = getTimeOfDay(hours).toLowerCase();
 setBg(timeOfDay, randomNum);
 
 const getSlideNext = () => {
-    const date = new Date();
-    const hours = date.getHours();
+    // const date = new Date();
+    // const hours = date.getHours();
     randomNum = getRandomNum()
-    const timeOfDay = getTimeOfDay(hours).toLowerCase();
+    // const timeOfDay = getTimeOfDay(hours).toLowerCase();
     if (randomNum < 21) {
         randomNum++
     } else {
@@ -108,9 +148,9 @@ const getSlideNext = () => {
 }
 
 const getSlidePrev = () => {
-    const date = new Date();
-    const hours = date.getHours();
-    const timeOfDay = getTimeOfDay(hours).toLowerCase();
+    // const date = new Date();
+    // const hours = date.getHours();
+    // const timeOfDay = getTimeOfDay(hours).toLowerCase();
     randomNum = getRandomNum()
     if (randomNum > 1) {
         randomNum--
@@ -133,7 +173,7 @@ async function getWeather() {
     if (!city.value) {
         city.value = "Minsk"
     }
-    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city.value}&lang=en&appid=08f2a575dda978b9c539199e54df03b0&units=metric`;
+    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city.value}&lang=${lang.toLowerCase()}&appid=08f2a575dda978b9c539199e54df03b0&units=metric`;
     const res = await fetch(url);
     const data = await res.json();
     const weatherIcon = document.querySelector('.weather-icon');
@@ -327,13 +367,8 @@ getQuotes()
 const changeQuote = document.querySelector(".change-quote")
 changeQuote.addEventListener("click", getQuotes)
 
-// TRNASLATE
 
-let greetingTranslation = {
- En: "hkjhkjk" ,
- Rus: "Пишите код так, как будто сопровождать его будет склонный к насилию психопат, который знает, где вы живете"
 
-}
 
 
 
