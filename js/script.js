@@ -198,16 +198,23 @@ const playPrev = document.querySelector('.play-prev');
 const playNext = document.querySelector('.play-next');
 const items = document.querySelectorAll('.play-item')
 
-async function getSong() {
-    const song = `${playList[choosedItem].src}`;
-    const res = await fetch(song, {
-        method: 'GET',
-        headers: { 'Access-Control-Allow-Origin': '*' }
-    });
+// async function getSong() {
+//     const song = `${playList[choosedItem].src}`;
+//     const res = await fetch(song, {
+//         method: 'GET',
+//         headers: { 'Access-Control-Allow-Origin': '*' }
+//     });
 
-    audio.src = res.url
-    console.log(audio.src)
-}
+//     audio.src = res.url
+//     console.log(audio.src)
+// }
+
+function getSong() {
+        const song = `${playList[choosedItem].src}`;
+        audio.src = song
+        console.log(audio.src)
+    }
+
 
 getSong()
 
