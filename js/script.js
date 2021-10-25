@@ -200,7 +200,10 @@ const items = document.querySelectorAll('.play-item')
 
 async function getSong() {
     const song = `${playList[choosedItem].src}`;
-    const res = await fetch(song);
+    const res = await fetch(song, {
+        method: 'GET',
+        headers: { 'Access-Control-Allow-Origin': '*' }
+    });
 
     audio.src = res.url
     console.log(audio.src)
