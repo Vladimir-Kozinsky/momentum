@@ -4,8 +4,8 @@ let timeOfDay;
 const showTime = () => {
     const time = document.querySelector('.time');
     const date = new Date();
-    const currentTime = date.toLocaleTimeString(lang === "En" 
-    ? 'en-US': 'ru-RU')
+    const currentTime = date.toLocaleTimeString(lang === "En"
+        ? 'en-US' : 'ru-RU')
     time.textContent = currentTime;
     setTimeout(showTime, 1000);
     const option = { hour: 'numeric', minute: 'numeric', second: 'numeric' }
@@ -25,8 +25,8 @@ const showDate = () => {
     const dateSel = document.querySelector(".date");
     const date = new Date();
     const options = { weekday: 'long', month: 'long', day: 'numeric', timeZone: 'UTC' };
-    const currentDate = date.toLocaleDateString(lang === "En" 
-    ? 'en-US': 'ru-RU', options);
+    const currentDate = date.toLocaleDateString(lang === "En"
+        ? 'en-US' : 'ru-RU', options);
     dateSel.textContent = currentDate;
 }
 
@@ -52,16 +52,16 @@ let greetingTranslation = {
 const getTimeOfDay = (hour) => {
     if (6 <= hour && hour <= 11) {
         timeOfDay = "morning"
-        return lang === "En" ? greetingTranslation.en.mor : greetingTranslation.ru.mor
+        return `${lang === "En" ? greetingTranslation.en.mor : greetingTranslation.ru.mor},`
     } else if (12 <= hour && hour <= 17) {
-        timeOfDay = "afternoon" 
-        return lang === "En" ? greetingTranslation.en.aft : greetingTranslation.ru.aft
+        timeOfDay = "afternoon"
+        return `${lang === "En" ? greetingTranslation.en.aft : greetingTranslation.ru.aft},`
     } else if (18 <= hour && hour <= 23) {
         timeOfDay = "evening"
-        return lang === "En" ? greetingTranslation.en.eve : greetingTranslation.ru.eve
+        return `${lang === "En" ? greetingTranslation.en.eve : greetingTranslation.ru.eve},`
     } else {
         timeOfDay = "night"
-        return lang === "En" ? greetingTranslation.en.nig : greetingTranslation.ru.nig
+        return `${lang === "En" ? greetingTranslation.en.nig : greetingTranslation.ru.nig},`
     }
 }
 
@@ -78,18 +78,28 @@ showGreeting()
 
 const setLocalStorage = () => {
     const name = document.querySelector(".name")
+    const city = document.querySelector(".city")
     localStorage.setItem('name', name.value);
+    localStorage.setItem('city', city.value);
 }
 
 window.addEventListener('beforeunload', setLocalStorage)
-
+const name = document.querySelector(".name")
 function getLocalStorage() {
-    const name = document.querySelector(".name")
+
     if (localStorage.getItem('name')) {
         name.value = localStorage.getItem('name');
     } else {
-        name.placeholder = "[Enter Name]"
+        name.placeholder = lang === "En" ? "[Enter Name]" : "[Введите имя]"
     }
+
+    const city = document.querySelector(".city")
+    if (localStorage.getItem('city')) {
+        city.value = localStorage.getItem('city');
+    } else {
+        // city.placeholder = "[Enter Name]"
+    }
+
 }
 window.addEventListener('load', getLocalStorage)
 
@@ -103,6 +113,7 @@ const changeLang = () => {
     language.textContent = lang
     showDate();
     getWeather();
+    name.placeholder = lang === "En" ? "[Enter Name]" : "[Введите имя]"
 
 }
 
@@ -171,7 +182,9 @@ slidePrev.addEventListener("click", getSlidePrev)
 async function getWeather() {
     const city = document.querySelector(".city")
     if (!city.value) {
-        city.value = "Minsk"
+        city.value = lang === "En" ? "Minsk" : "Минск"
+    } else if (city.value === "Minsk" || city.value === "Минск" ) {
+        city.value = lang === "En" ? "Minsk" : "Минск"
     }
     const url = `https://api.openweathermap.org/data/2.5/weather?q=${city.value}&lang=${lang.toLowerCase()}&appid=08f2a575dda978b9c539199e54df03b0&units=metric`;
     const res = await fetch(url);
@@ -185,8 +198,8 @@ async function getWeather() {
     weatherIcon.classList.add(`owf-${data.weather[0].id}`);
     temperature.textContent = `${Math.round(data.main.temp)}°C`;
     weatherDescription.textContent = data.weather[0].description;
-    weatherWind.textContent = `Wind speed: ${Math.round(data.wind.speed)} m/s`;
-    weatherHumidity.textContent = `Humidity: ${data.main.humidity}% `;
+    weatherWind.textContent = `${lang === "En" ? 'Wind speed' : 'Скорость ветра'}: ${Math.round(data.wind.speed)} ${lang === "En" ? 'm/s' : 'м/с'}`;
+    weatherHumidity.textContent = `${lang === "En" ? 'Humidity' : 'Влажность'}: ${data.main.humidity}% `;
 }
 getWeather()
 const city = document.querySelector(".city")
@@ -351,21 +364,26 @@ function getTimeCodeFromNum(num) {
 }
 
 // QUOTE OF THE DAY
-let qouateNumber = 0;
+const quoteText = document.querySelector(".quote")
+
 async function getQuotes() {
     const quotes = 'js/data.json';
     const res = await fetch(quotes);
     const data = await res.json();
-    const quoteText = document.querySelector(".quote")
-    if (qouateNumber > data.length - 1) {
-        qouateNumber = 0
+
+    const getRandomNum = () => {
+        let min = Math.ceil(0);
+        let max = Math.floor(data.length - 1);
+        return Math.floor(Math.random() * (max - min + 1)) + min;
     }
-    quoteText.textContent = await data[qouateNumber].text
-    qouateNumber++
+    console.log(getRandomNum())
+    quoteText.textContent = await data[getRandomNum()].text
 }
 getQuotes()
 const changeQuote = document.querySelector(".change-quote")
 changeQuote.addEventListener("click", getQuotes)
+
+window.addEventListener('load', getLocalStorage)
 
 
 
