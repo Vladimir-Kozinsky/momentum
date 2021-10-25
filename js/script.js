@@ -157,22 +157,22 @@ city.addEventListener("change", getWeather)
 const playList = [
     {
         title: 'Aqua Caelestis',
-        src: '../assets/sounds/Aqua Caelestis.mp3',
+        src: './assets/sounds/Aqua Caelestis.mp3',
         duration: '00:58'
     },
     {
         title: 'Ennio Morricone',
-        src: '../assets/sounds/Ennio Morricone.mp3',
+        src: './assets/sounds/Ennio Morricone.mp3',
         duration: '03:50'
     },
     {
         title: 'River Flows In You',
-        src: '../assets/sounds/River Flows In You.mp3',
+        src: './assets/sounds/River Flows In You.mp3',
         duration: '00:58'
     },
     {
         title: 'Summer Wind',
-        src: '../assets/sounds/Summer Wind.mp3',
+        src: './assets/sounds/Summer Wind.mp3',
         duration: '00:58'
     }
 ]
@@ -210,12 +210,10 @@ const items = document.querySelectorAll('.play-item')
 // }
 
 function getSong() {
-        const song = `${playList[choosedItem].src}`;
-        audio.src = song
-        console.log(audio.src)
-    }
-
-
+    const song = `${playList[choosedItem].src}`;
+    audio.src = song
+    console.log(audio.src)
+}
 getSong()
 
 const playPause = () => {
@@ -237,24 +235,24 @@ function pauseAudio() {
     playBtn.classList.remove('pause')
 }
 
-async function playAudioPrev() {
+function playAudioPrev() {
     if (choosedItem === 0) {
         choosedItem = playList.length - 1
     } else {
         choosedItem -= 1
     }
     addClassToPlayListItem(choosedItem)
-    await getSong()
+    getSong()
     playAudio()
 }
-async function playAudioNext() {
+function playAudioNext() {
     if (choosedItem === playList.length - 1) {
         choosedItem = 0
     } else {
         choosedItem += 1
     }
     addClassToPlayListItem(choosedItem)
-    await getSong()
+    getSong()
     playAudio()
 }
 
@@ -328,6 +326,14 @@ async function getQuotes() {
 getQuotes()
 const changeQuote = document.querySelector(".change-quote")
 changeQuote.addEventListener("click", getQuotes)
+
+// TRNASLATE
+
+let greetingTranslation = {
+ En: "hkjhkjk" ,
+ Rus: "Пишите код так, как будто сопровождать его будет склонный к насилию психопат, который знает, где вы живете"
+
+}
 
 
 
